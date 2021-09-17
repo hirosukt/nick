@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
-class CommandNick : CommandExecutor, JavaPlugin() {
+class CommandNick : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender is Player) {
@@ -15,15 +15,15 @@ class CommandNick : CommandExecutor, JavaPlugin() {
 
                 var target = sender.player
 
-                if (args[1].isNotEmpty()) {
+                if (args.size >= 2) {
                     target = Bukkit.getPlayer(args[1])
                 }
 
-                if (args.size == 0) {
+                if (args.isEmpty()) {
                     setNick(target, target.name)
                     sender.sendMessage("Nickname reset.")
                 } else {
-                    if (args[0].length <= config.getInt("name_limit", 251)) {
+                    if (args[0].length <= Nick.instance.config.getInt("name_limit", 251)) {
                         setNick(target, args[0])
                         sender.sendMessage("Nickname set to §l" + args[0] + "§r.")
                     } else {
@@ -33,8 +33,8 @@ class CommandNick : CommandExecutor, JavaPlugin() {
                 return true
             }
 
-            if (command.name == "rlnick") {
-                reloadConfig()
+            else if (command.name == "rlnick") {
+                Nick.instance.reloadConfig()
                 sender.sendMessage("Nick config reloaded.")
                 return true
             }
