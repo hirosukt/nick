@@ -11,7 +11,7 @@ class Nick : JavaPlugin() {
         saveConfig()
 
         getCommand("nick").executor = CommandNick()
-        getCommand("rlnick").executor = CommandConfigNick()
+        getCommand("rlnick").executor = CommandNick()
         logger.info("plugin has loaded.")
     }
 

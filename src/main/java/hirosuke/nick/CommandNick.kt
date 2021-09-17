@@ -10,24 +10,32 @@ import org.bukkit.plugin.java.JavaPlugin
 class CommandNick : CommandExecutor, JavaPlugin() {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if (sender is Player && command.name == "nick") {
-            var target = sender.player
+        if (sender is Player) {
+            if (command.name == "nick") {
 
-            if (args[1].isNotEmpty()) {
-                target = Bukkit.getPlayer(args[1])
+                var target = sender.player
+
+                if (args[1].isNotEmpty()) {
+                    target = Bukkit.getPlayer(args[1])
+                }
+
+                if (args.size == 0) {
+                    setNick(target, target.name)
+                    sender.sendMessage("Nickname reset.")
+                } else {
+                    if (args[0].length <= config.getInt("name_limit", 251)) {
+                        setNick(target, args[0])
+                        sender.sendMessage("Nickname set to §l" + args[0] + "§r.")
+                    } else {
+                        sender.sendMessage("Your nickname is too long!")
+                    }
+                }
+                return true
             }
 
-            if (args.size == 0) {
-                setNick(target, target.name)
-                sender.sendMessage("Nickname reset.")
-                return true
-            } else {
-                if (args[0].length <= config.getInt("name_limit", 251)) {
-                    setNick(target, args[0])
-                    sender.sendMessage("Nickname set to §l" + args[0] + "§r.")
-                } else {
-                    sender.sendMessage("Your nickname is too long!")
-                }
+            if (command.name == "rlnick") {
+                reloadConfig()
+                sender.sendMessage("Nick config reloaded.")
                 return true
             }
         }
