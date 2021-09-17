@@ -5,6 +5,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.lang.Exception
 
 class CommandNick : CommandExecutor {
 
@@ -15,7 +16,11 @@ class CommandNick : CommandExecutor {
                 var target = sender.player
 
                 if (args.size >= 2) {
-                    target = Bukkit.getPlayer(args[1])
+                    try {
+                        target = Bukkit.getPlayer(args[1])
+                    } catch (e: Exception) {
+                        sender.sendMessage("Player is not online.")
+                    }
                 }
 
                 if (args.isEmpty()) {
