@@ -23,8 +23,9 @@ class CommandNick : CommandExecutor {
                     sender.sendMessage("Nickname reset.")
                 } else {
                     if (args[0].length <= Nick.instance.config.getInt("name_limit", 251)) {
-                        setNick(target, args[0])
-                        sender.sendMessage("Nickname set to §l" + args[0] + "§r.")
+                        var replaced = args[0]+"&r".replace("&", "§")
+                        setNick(target, replaced)
+                        sender.sendMessage("Nickname set to §l $replaced.")
                     } else {
                         sender.sendMessage("Your nickname is too long!")
                     }
@@ -43,8 +44,7 @@ class CommandNick : CommandExecutor {
 
     fun setNick(player: Player, name: String) {
         var target = Bukkit.getPlayer(player.name)
-        var replaced = name.replace("&", "§")
-        target.displayName = replaced
-        target.playerListName = replaced
+        target.displayName = name
+        target.playerListName = name
     }
 }
