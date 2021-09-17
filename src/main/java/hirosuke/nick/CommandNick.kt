@@ -20,18 +20,18 @@ class CommandNick : CommandExecutor, JavaPlugin() {
             if (args.size == 0) {
                 setNick(target, target.name)
                 sender.sendMessage("Nickname reset.")
+                return true
             } else {
                 if (args[0].length <= config.getInt("name_limit", 251)) {
                     setNick(target, args[0])
                     sender.sendMessage("Nickname set to §l" + args[0] + "§r.")
+                } else {
+                    sender.sendMessage("Your nickname is too long!")
                 }
+                return true
             }
-            return true
-        } else if (command.name == "rlnick") {
-            reloadConfig()
-            sender.sendMessage("Nick Config reloaded.")
         }
-        return false
+        return true
     }
 
     fun setNick(player: Player, name: String) {
