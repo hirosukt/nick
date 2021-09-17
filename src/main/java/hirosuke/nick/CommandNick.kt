@@ -20,22 +20,18 @@ class CommandNick : CommandExecutor {
 
                 if (args.isEmpty()) {
                     setNick(target, target.name)
+                    NameTag.of(target.name).applyTo(target)
                     sender.sendMessage("Nickname reset.")
                 } else {
-                    if (args[0].length <= Nick.instance.config.getInt("name_limit", 251)) {
-                        var replaced = args[0]+"&r".replace("&", "§")
+                    if (args[0].length <= 16) {
+                        var replaced = (args[0]+"&r").replace("&", "§")
                         setNick(target, replaced)
-                        sender.sendMessage("Nickname set to §l $replaced.")
+                        NameTag.of(replaced).applyTo(target)
+                        sender.sendMessage("Nickname set to $replaced.")
                     } else {
-                        sender.sendMessage("Your nickname is too long!")
+                        sender.sendMessage("Name length must not exceed 16 characters.")
                     }
                 }
-                return true
-            }
-
-            else if (command.name == "rlnick") {
-                Nick.instance.reloadConfig()
-                sender.sendMessage("Nick config reloaded.")
                 return true
             }
         }

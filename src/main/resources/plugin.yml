@@ -4,6 +4,8 @@ main: hirosuke.nick.Nick
 api-version: 1.16
 prefix: nick
 authors: [ Hirosuke ]
+depend:
+  - ProtocolLib
 description: Change player's display name.
 commands:
   nick:
