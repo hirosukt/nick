@@ -28,10 +28,10 @@ class CommandNick : CommandExecutor {
                     NameTag.of(target.name).applyTo(target)
                     sender.sendMessage("Nickname reset.")
                 } else {
-                    if (args[0].length <= 16) {
+                    if (args[0].length < 15) {
                         var replaced = (args[0]+"&r").replace("&", "§")
                         setNick(target, replaced)
-                        NameTag.of(replaced).applyTo(target)
+                        try { NameTag.of(replaced).applyTo(target) } catch (e: NoSuchMethodException) { /* no-op */ }
                         sender.sendMessage("Nickname set to $replaced.")
                     } else {
                         sender.sendMessage("Name length must not exceed 16 characters.")

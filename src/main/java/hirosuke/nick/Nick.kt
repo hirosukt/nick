@@ -9,7 +9,6 @@ class Nick : JavaPlugin() {
 
     override fun onEnable() {
         getCommand("nick").executor = CommandNick()
-        getCommand("rlnick").executor = CommandNick()
         logger.info("plugin has loaded.")
     }
 
