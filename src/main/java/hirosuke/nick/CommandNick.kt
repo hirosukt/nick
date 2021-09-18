@@ -21,7 +21,7 @@ class CommandNick : CommandExecutor {
                 var player = sender
 
                 if (args.isEmpty()) {
-                    setNick(player, Nick.instance.config.getString(player.uniqueId.toString()))
+
                     sender.sendMessage("Nickname reset.")
                 }
 
