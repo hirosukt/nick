@@ -12,6 +12,9 @@ class Nick : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+
+        server.pluginManager.registerEvents(EventJoin(), this)
+
         getCommand("nick")?.executor = CommandNick()
         logger.info("plugin has loaded.")
     }
