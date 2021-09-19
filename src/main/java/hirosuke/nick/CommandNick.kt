@@ -1,6 +1,5 @@
 package hirosuke.nick
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.mojang.authlib.GameProfile
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
 import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn
@@ -13,7 +12,6 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
 import java.lang.reflect.Field
 
-
 class CommandNick : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -23,12 +21,12 @@ class CommandNick : CommandExecutor {
 
                 if (args.isEmpty()) {
                     setNick(player, GameProfileBuilder.fetch(player.uniqueId).name)
-                    sender.sendMessage("Nickname reset.")
+                    sender.sendMessage("Removed your nickname.")
                 }
 
                 if (args.lastIndex >= 0) {
                     if (args[0].length > 16) {
-                        sender.sendMessage("Name length is must be under than 16.")
+                        sender.sendMessage("Nickname length is must be under than 16.")
                         return true
                     }
 
@@ -39,7 +37,7 @@ class CommandNick : CommandExecutor {
                     } else {
                         setNick(player, replaced)
                     }
-                    sender.sendMessage("Nickname set to $replaced.")
+                    sender.sendMessage("Set nickname to $replaced.")
                 }
             }
         }
