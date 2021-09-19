@@ -1,5 +1,5 @@
 # nick
-Change player's display name.  
+The plugin adds command to change player's chat/nametag/tab name.  
 If you have a problem, you can get support in [my discord server](https://discord.gg/A8XtpJhHrV).
 
 Worked in: 1.12
