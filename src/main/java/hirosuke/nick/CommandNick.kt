@@ -1,5 +1,6 @@
 package hirosuke.nick
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.mojang.authlib.GameProfile
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
 import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn
@@ -10,8 +11,12 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.lang.reflect.Field
-import java.lang.reflect.Modifier
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class CommandNick : CommandExecutor {
 
@@ -21,7 +26,15 @@ class CommandNick : CommandExecutor {
                 var player = sender
 
                 if (args.isEmpty()) {
+                    val connection: HttpURLConnection = URL("https://sessionserver.mojang.com/session/minecraft/profile/" + player.uniqueId.toString().replace("-", "")).openConnection() as HttpURLConnection
+                    sender.sendMessage(player.uniqueId.toString().replace("-", ""))
+                    var json: String = BufferedReader(InputStreamReader(connection.inputStream)).readText()
+                    sender.sendMessage(json)
 
+                    var mapper = ObjectMapper()
+                    var result = mapper.readValue(json, GameProfile::class.java)
+
+                    setNick(player, result.name)
                     sender.sendMessage("Nickname reset.")
                 }
 
@@ -50,6 +63,7 @@ class CommandNick : CommandExecutor {
         player.playerListName = name
         player.displayName = name
         player.customName = player.name
+        player.isCustomNameVisible = true
 
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue
@@ -57,10 +71,6 @@ class CommandNick : CommandExecutor {
 
             var nameField: Field = GameProfile::class.java.getDeclaredField("name")
             nameField.isAccessible = true
-
-            var modifiersField = Field::class.java.getDeclaredField("modifiers")
-            modifiersField.isAccessible = true
-            modifiersField.set(nameField, nameField.modifiers and Modifier.FINAL.inv())
 
             nameField.set(player.profile, name)
 
