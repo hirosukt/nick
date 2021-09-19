@@ -16,6 +16,7 @@ and if name argument is empty, nickname will be removed.
 
 ## Featured
 * Add permission
+* Skin changer
 
 ## Installation
 Put .jar in your plugin folder and reload/restart server.
