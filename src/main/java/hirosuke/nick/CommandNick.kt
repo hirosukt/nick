@@ -37,7 +37,7 @@ class CommandNick : CommandExecutor {
                     } else {
                         setNick(player, replaced)
                     }
-                    sender.sendMessage("Set nickname to $replaced.")
+                    sender.sendMessage("Set your nickname to §l$replaced.")
                 }
             }
         }
