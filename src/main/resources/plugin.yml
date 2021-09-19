@@ -1,7 +1,7 @@
 name: nick
 version: '${version}'
 main: hirosuke.nick.Nick
-api-version: 1.16
+api-version: 1.12
 prefix: nick
 authors: [ Hirosuke ]
 description: Change player's display name.

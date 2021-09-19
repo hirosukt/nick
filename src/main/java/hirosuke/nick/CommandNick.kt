@@ -48,10 +48,13 @@ class CommandNick : CommandExecutor {
 
     fun setNick(player: Player, name: String) {
 
+        player.playerListName = name
+        player.displayName = name
+        player.customName = name
+        player.isCustomNameVisible = true
+
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue
-            player.playerListName = name
-            player.displayName = name
 
             (ps as CraftPlayer).handle.playerConnection.sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, (player as CraftPlayer).handle))
 
