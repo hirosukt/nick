@@ -11,5 +11,3 @@ commands:
   nick:
     description: change player's display name.
     usage: /nick <name>
-  rlnick:
-    description: reload nick plugin config.

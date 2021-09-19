@@ -33,11 +33,13 @@ class CommandNick : CommandExecutor {
                     var replaced: String = args[0].replace("&", "§") + "§r"
                     if (args.lastIndex >= 1) {
                         var replacedPlayer: Player = Bukkit.getPlayer(args[1])!!
+                        var beforeName = GameProfileBuilder.fetch(replacedPlayer.uniqueId).name
                         setNick(replacedPlayer, replaced)
+                        sender.sendMessage("Set ${beforeName}'s nickname to §l$replaced.")
                     } else {
                         setNick(player, replaced)
+                        sender.sendMessage("Set your nickname to §l$replaced.")
                     }
-                    sender.sendMessage("Set your nickname to §l$replaced.")
                 }
             }
         }
@@ -46,13 +48,11 @@ class CommandNick : CommandExecutor {
 
     fun setNick(player: Player, name: String) {
 
-        player.playerListName = name
-        player.displayName = name
-        player.customName = player.name
-        player.isCustomNameVisible = true
-
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue
+            player.playerListName = name
+            player.displayName = name
+
             (ps as CraftPlayer).handle.playerConnection.sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, (player as CraftPlayer).handle))
 
             var nameField: Field = GameProfile::class.java.getDeclaredField("name")
