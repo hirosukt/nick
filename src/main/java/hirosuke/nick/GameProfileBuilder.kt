@@ -6,10 +6,8 @@ import com.mojang.util.UUIDTypeAdapter
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import com.mojang.authlib.properties.PropertyMap
-import hirosuke.nick.GameProfileBuilder
 import java.util.HashMap
-import hirosuke.nick.GameProfileBuilder.CachedProfile
-import org.apache.commons.io.IOUtils
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.IOUtils
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
 import kotlin.jvm.JvmOverloads
 import kotlin.Throws

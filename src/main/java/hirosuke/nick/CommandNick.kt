@@ -1,16 +1,16 @@
 package hirosuke.nick
 
 import com.mojang.authlib.GameProfile
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
-import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn
-import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
 import java.lang.reflect.Field
+import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy
+import net.minecraft.server.v1_16_R3.PacketPlayOutNamedEntitySpawn
+import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
 
 class CommandNick : CommandExecutor {
 
@@ -48,8 +48,8 @@ class CommandNick : CommandExecutor {
 
     fun setNick(player: Player, name: String) {
 
-        player.playerListName = name
-        player.displayName = name
+        player.setPlayerListName(name)
+        player.setDisplayName(name)
         player.customName = name
         player.isCustomNameVisible = true
 

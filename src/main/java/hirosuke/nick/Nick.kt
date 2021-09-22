@@ -3,6 +3,7 @@ package hirosuke.nick;
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
+
 class Nick : JavaPlugin() {
 
     companion object {
@@ -15,7 +16,7 @@ class Nick : JavaPlugin() {
 
         server.pluginManager.registerEvents(EventJoin(), this)
 
-        getCommand("nick")?.executor = CommandNick()
+        getCommand("nick")!!.setExecutor(CommandNick())
         logger.info("plugin has loaded.")
     }
 
