@@ -16,7 +16,7 @@ class Nick : JavaPlugin() {
 
         server.pluginManager.registerEvents(EventJoin(), this)
 
-//        getCommand("nick")!!.setExecutor(CommandNick())
+        getCommand("nick")!!.setExecutor(CommandNick())
         logger.info("plugin has loaded.")
     }
 
