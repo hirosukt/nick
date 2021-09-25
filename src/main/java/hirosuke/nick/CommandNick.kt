@@ -1,5 +1,6 @@
 package hirosuke.nick
 
+import com.mojang.authlib.GameProfile
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -10,13 +11,15 @@ import java.lang.reflect.Field
 
 open class CommandNick : CommandExecutor {
 
+    var beforeNames: HashMap<String, String> = HashMap()
+
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender is Player) {
             if (command.name == "nick") {
                 var player = sender
 
                 if (args.isEmpty()) {
-                    setNick(player, GameProfileBuilder.fetch(player.uniqueId).name)
+                    beforeNames[player.uniqueId.toString()]?.let { setNick(player, it) }
                     sender.sendMessage("Removed your nickname.")
                 }
 
@@ -27,17 +30,13 @@ open class CommandNick : CommandExecutor {
                     }
 
                     var replaced: String = args[0].replace("&", "§") + "§r"
+                    beforeNames.putIfAbsent(player.uniqueId.toString(), player.name)
                     if (args.lastIndex >= 1) {
                         var replacedPlayer: Player = Bukkit.getPlayer(args[1])!!
-                        var beforeName = GameProfileBuilder.fetch(replacedPlayer.uniqueId).name
+                        var beforeName = beforeNames[player.uniqueId.toString()]
                         setNick(replacedPlayer, replaced)
                         sender.sendMessage("Set ${beforeName}'s nickname to §l$replaced.")
                     } else {
-
-                        player.setPlayerListName(replaced)
-                        player.setDisplayName(replaced)
-                        player.customName = replaced
-                        player.isCustomNameVisible = true
                         setNick(player, replaced)
                         sender.sendMessage("Set your nickname to §l$replaced.")
                     }
@@ -48,20 +47,21 @@ open class CommandNick : CommandExecutor {
     }
 
     private fun getNMSClass(name: String): Class<*> {
-        Nick.instance.logger.info(Bukkit.getServer().javaClass.getPackage().name.split(".").toTypedArray().size.toString())
-        Nick.instance.logger.info(Bukkit.getServer().javaClass.getPackage().name.split(".").toTypedArray()[0])
-        Nick.instance.logger.info(Bukkit.getServer().javaClass.getPackage().name.split(".").toTypedArray().toString())
-
-        return Class.forName("net.minecraft.server." + Bukkit.getServer().javaClass.getPackage().name.split(".").toTypedArray()[3] + ".$name")
+        return Class.forName("net.minecraft.server." + getPackageVersion() + ".$name")
     }
 
     private fun getBukkitNMSClass(name: String): Class<*> {
-        return Class.forName("org.bukkit.craftbukkit." + Bukkit.getServer().javaClass.getPackage().name.split(".").toTypedArray()[3] + ".$name")
+        return Class.forName("org.bukkit.craftbukkit." + getPackageVersion() + ".$name")
     }
 
-    private fun sendPacket(player: Any, packet: Any?) {
+    private fun getPackageVersion(): String {
+        return Bukkit.getServer().javaClass.getPackage().name.split(".").toTypedArray()[3]
+    }
+
+    private fun sendPacket(playerTo: Any, packet: Any?) {
         try {
-            val handle = player.javaClass.getMethod("getHandle")
+            var craftBukkitPlayer = getBukkitNMSClass("entity.CraftPlayer")
+            val handle = craftBukkitPlayer.cast(playerTo).javaClass.getMethod("getHandle").invoke(playerTo)
             val playerConnection = handle.javaClass.getField("playerConnection")[handle]
             playerConnection.javaClass.getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet)
         } catch (e: Exception) {
@@ -72,27 +72,36 @@ open class CommandNick : CommandExecutor {
     private fun setNick(player: Player, name: String) {
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue
+            player.setPlayerListName(name)
+            player.setDisplayName(name)
+            player.customName = name
+            player.isCustomNameVisible = true
 
-//            var array: Any = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 1)
+            var conArray: Class<*> = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 0).javaClass
             var craftBukkitPlayer = getBukkitNMSClass("entity.CraftPlayer")
-            var enumAddPlayer = getNMSClass("PacketPlayOutPlayerInfo.EnumPlayerInfoAction").enumConstants[0]
-            var enumRemovePlayer = getNMSClass("PacketPlayOutPlayerInfo").getField("REMOVE_PLAYER").get(null)
-            var packetPlayOutPlayerInfoConstructor: Constructor<*> = getNMSClass("PacketPlayOutPlayerInfo").getConstructor(getNMSClass("PacketPlayOutPlayerInfo"))
-            var packetPlayOutEntityDestroyConstructor: Constructor<*> = getNMSClass("PacketPlayOutEntityDestroy").getConstructor(getNMSClass("PacketPlayOutEntityDestroy"))
-            var packetPlayOutNamedEntitySpawn: Constructor<*> = getNMSClass("PacketPlayOutNamedEntitySpawn").getConstructor(getNMSClass("PacketPlayOutNamedEntitySpawn"))
-            val handlePlayer = player.javaClass.getMethod("getHandle").invoke(player)
-            val handlePs = ps.javaClass.getMethod("getHandle").invoke(ps)
+            var packetPlayOutPlayerInfoConstructor: Constructor<*> = if(getPackageVersion() != "v1_8_R1") getNMSClass("PacketPlayOutPlayerInfo").getConstructor(getNMSClass("PacketPlayOutPlayerInfo").declaredClasses[1], conArray) else getNMSClass("PacketPlayOutPlayerInfo").getConstructor(getNMSClass("EnumPlayerInfoAction"), conArray)
+            var enumAddPlayer = if(getPackageVersion() != "v1_8_R1") getNMSClass("PacketPlayOutPlayerInfo").declaredClasses[1].getField("ADD_PLAYER").get(null) else getNMSClass("EnumPlayerInfoAction").getField("ADD_PLAYER").get(null)
+            var enumRemovePlayer = if(getPackageVersion() != "v1_8_R1") getNMSClass("PacketPlayOutPlayerInfo").declaredClasses[1].getField("REMOVE_PLAYER").get(null) else getNMSClass("EnumPlayerInfoAction").getField("REMOVE_PLAYER").get(null)
+            var packetPlayOutEntityDestroyConstructor: Constructor<*> = getNMSClass("PacketPlayOutEntityDestroy").getConstructor(IntArray(0).javaClass)
+            var packetPlayOutNamedEntitySpawnConstructor: Constructor<*> = getNMSClass("PacketPlayOutNamedEntitySpawn").getConstructor(getNMSClass("EntityHuman"))
+            val handlePlayer = craftBukkitPlayer.getMethod("getHandle").invoke(player)
+            val playerProfile = craftBukkitPlayer.getDeclaredMethod("getProfile").invoke(craftBukkitPlayer.cast(player))
 
-            sendPacket(craftBukkitPlayer.cast(ps), packetPlayOutPlayerInfoConstructor.newInstance(enumRemovePlayer, handlePlayer))
+            val array = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 1)
+            val entityPlayer: Any = player.javaClass.getMethod("getHandle").invoke(player)
+            java.lang.reflect.Array.set(array, 0, entityPlayer)
 
-            var nameField: Field = getNMSClass("GameProfile")::class.java.getDeclaredField("name")
+            sendPacket(ps, packetPlayOutPlayerInfoConstructor.newInstance(enumRemovePlayer, array))
+
+            var nameField: Field = GameProfile::class.java.getDeclaredField("name")
             nameField.isAccessible = true
+            nameField.set(playerProfile, name)
 
-            nameField.set(handlePlayer.javaClass.getMethod("getProfile").invoke(handlePlayer), name)
+            sendPacket(ps, packetPlayOutPlayerInfoConstructor.newInstance(enumAddPlayer, array))
+            sendPacket(ps, packetPlayOutEntityDestroyConstructor.newInstance(intArrayOf(player.entityId)))
+            sendPacket(ps, packetPlayOutNamedEntitySpawnConstructor.newInstance(handlePlayer))
 
-            sendPacket(handlePs, packetPlayOutPlayerInfoConstructor.newInstance(enumAddPlayer, handlePlayer))
-            sendPacket(handlePs, packetPlayOutEntityDestroyConstructor.newInstance(player.entityId))
-            sendPacket(handlePs, packetPlayOutNamedEntitySpawn.newInstance((handlePlayer)))
+            player.spigot().respawn()
         }
     }
 }
