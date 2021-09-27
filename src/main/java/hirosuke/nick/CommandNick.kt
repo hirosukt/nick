@@ -70,12 +70,11 @@ open class CommandNick : CommandExecutor {
     }
 
     private fun setNick(player: Player, name: String) {
+        player.setPlayerListName(name)
+        player.setDisplayName(name)
+
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue
-            player.setPlayerListName(name)
-            player.setDisplayName(name)
-            player.customName = name
-            player.isCustomNameVisible = true
 
             var conArray: Class<*> = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 0).javaClass
             var craftBukkitPlayer = getBukkitNMSClass("entity.CraftPlayer")

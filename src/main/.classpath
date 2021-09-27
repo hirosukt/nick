@@ -4,9 +4,9 @@
 	<classpathentry kind="src" path="/nick.main/java"/>
 	<classpathentry kind="src" path="/nick.main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: com.google.code.gson:gson:2.8.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: com.fasterxml.jackson.core:jackson-databind:2.3.4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: com.google.code.gson:gson:2.8.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: net.md-5:bungeecord-chat:1.16-R0.4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: commons-lang:commons-lang:2.6"/>
@@ -18,5 +18,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.5.30"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.jetbrains:annotations:13.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.5.30"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: com.google.code.gson:gson:2.4"/>
 	<classpathentry kind="output" path="/build/classes/java/main"/>
 </classpath>

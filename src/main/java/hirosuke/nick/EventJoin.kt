@@ -12,10 +12,13 @@ class EventJoin : Listener {
 
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
-        var ps = e.player
+        var player = e.player
 
-        for (player in Bukkit.getOnlinePlayers()) {
-            if(player == ps) continue
+        player.setPlayerListName(player.name)
+        player.setDisplayName(player.name)
+
+        for (ps in Bukkit.getOnlinePlayers()) {
+            if(ps == player) continue
 
             var conArray: Class<*> = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 0).javaClass
             var craftBukkitPlayer = getBukkitNMSClass("entity.CraftPlayer")
@@ -24,22 +27,22 @@ class EventJoin : Listener {
             var enumRemovePlayer = if(getPackageVersion() != "v1_8_R1") getNMSClass("PacketPlayOutPlayerInfo").declaredClasses[1].getField("REMOVE_PLAYER").get(null) else getNMSClass("EnumPlayerInfoAction").getField("REMOVE_PLAYER").get(null)
             var packetPlayOutEntityDestroyConstructor: Constructor<*> = getNMSClass("PacketPlayOutEntityDestroy").getConstructor(IntArray(0).javaClass)
             var packetPlayOutNamedEntitySpawnConstructor: Constructor<*> = getNMSClass("PacketPlayOutNamedEntitySpawn").getConstructor(getNMSClass("EntityHuman"))
-            val handlePlayer = craftBukkitPlayer.getMethod("getHandle").invoke(player)
-            val playerProfile = craftBukkitPlayer.getDeclaredMethod("getProfile").invoke(craftBukkitPlayer.cast(player))
+            val handlePlayer = craftBukkitPlayer.getMethod("getHandle").invoke(ps)
+            val playerProfile = craftBukkitPlayer.getDeclaredMethod("getProfile").invoke(craftBukkitPlayer.cast(ps))
 
             val array = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 1)
-            val entityPlayer: Any = player.javaClass.getMethod("getHandle").invoke(player)
+            val entityPlayer: Any = ps.javaClass.getMethod("getHandle").invoke(ps)
             java.lang.reflect.Array.set(array, 0, entityPlayer)
 
-            sendPacket(ps, packetPlayOutPlayerInfoConstructor.newInstance(enumRemovePlayer, array))
+            sendPacket(player, packetPlayOutPlayerInfoConstructor.newInstance(enumRemovePlayer, array))
 
             var nameField: Field = GameProfile::class.java.getDeclaredField("name")
             nameField.isAccessible = true
-            nameField.set(playerProfile, ps.customName)
+            nameField.set(playerProfile, player.customName)
 
-            sendPacket(ps, packetPlayOutPlayerInfoConstructor.newInstance(enumAddPlayer, array))
-            sendPacket(ps, packetPlayOutEntityDestroyConstructor.newInstance(intArrayOf(player.entityId)))
-            sendPacket(ps, packetPlayOutNamedEntitySpawnConstructor.newInstance(handlePlayer))
+            sendPacket(player, packetPlayOutPlayerInfoConstructor.newInstance(enumAddPlayer, array))
+            sendPacket(player, packetPlayOutEntityDestroyConstructor.newInstance(intArrayOf(ps.entityId)))
+            sendPacket(player, packetPlayOutNamedEntitySpawnConstructor.newInstance(handlePlayer))
         }
     }
 
