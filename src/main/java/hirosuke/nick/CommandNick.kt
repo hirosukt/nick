@@ -70,8 +70,11 @@ open class CommandNick : CommandExecutor {
     }
 
     private fun setNick(player: Player, name: String) {
+        var player = Bukkit.getPlayer(player.uniqueId)!!
         player.setPlayerListName(name)
         player.setDisplayName(name)
+        player.customName = name
+        player.isCustomNameVisible = true
 
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue

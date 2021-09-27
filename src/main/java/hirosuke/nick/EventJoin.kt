@@ -12,13 +12,17 @@ class EventJoin : Listener {
 
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
-        var player = e.player
-
-        player.setPlayerListName(player.name)
-        player.setDisplayName(player.name)
+        var player = Bukkit.getPlayer(e.player.uniqueId)!!
 
         for (ps in Bukkit.getOnlinePlayers()) {
             if(ps == player) continue
+
+            var ps = Bukkit.getPlayer(ps.uniqueId)!!
+
+            ps.setPlayerListName(ps.name)
+            ps.setDisplayName(ps.name)
+            ps.customName = ps.name
+            ps.isCustomNameVisible = true
 
             var conArray: Class<*> = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 0).javaClass
             var craftBukkitPlayer = getBukkitNMSClass("entity.CraftPlayer")
