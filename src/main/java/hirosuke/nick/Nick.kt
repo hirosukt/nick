@@ -3,7 +3,6 @@ package hirosuke.nick;
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
-
 class Nick : JavaPlugin() {
 
     companion object {
@@ -13,7 +12,7 @@ class Nick : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
-
+        saveDefaultConfig()
         server.pluginManager.registerEvents(EventJoin(), this)
 
         getCommand("nick")!!.setExecutor(CommandNick())

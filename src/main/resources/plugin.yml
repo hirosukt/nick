@@ -5,6 +5,7 @@ api-version: 1.13
 prefix: nick
 authors: [ Hirosuke ]
 description: Change player's display name.
+softdepend: [PlaceholderAPI]
 commands:
   nick:
     description: change player's display name.
