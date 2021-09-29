@@ -12,7 +12,8 @@ class EventJoin : Listener {
     fun onPlayerJoin(e: PlayerJoinEvent) {
         var player = Bukkit.getPlayer(e.player.uniqueId)!!
 
-        val nickname = if((Nick.instance.config.get("nicknames") as ConfigurationSection).contains(player.uniqueId.toString())) (Nick.instance.config.get("nicknames") as ConfigurationSection).getString(player.uniqueId.toString())!! else player.name
+        var nickSection = Nick.instance.config.getConfigurationSection("nicknames") != null
+        val nickname = if(nickSection) Nick.instance.config.getConfigurationSection("nicknames")?.getString(player.uniqueId.toString())!! else player.name
         CommandNick().setNick(player, nickname)
         CommandNick().applyOtherNickToPlayer(player)
     }

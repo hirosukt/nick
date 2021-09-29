@@ -124,7 +124,8 @@ open class CommandNick : CommandExecutor {
 
             val array = java.lang.reflect.Array.newInstance(getNMSClass("EntityPlayer"), 1)
             val entityPlayer: Any = player.javaClass.getMethod("getHandle").invoke(player)
-            val nickname = if((Nick.instance.config.get("nicknames") as ConfigurationSection).contains(player.uniqueId.toString())) (Nick.instance.config.get("nicknames") as ConfigurationSection).getString(player.uniqueId.toString())!! else player.name
+            var nickSection = Nick.instance.config.getConfigurationSection("nicknames") == null
+            val nickname = if(nickSection) Nick.instance.config.getConfigurationSection("nicknames")?.getString(player.uniqueId.toString())!! else player.name
             java.lang.reflect.Array.set(array, 0, entityPlayer)
 
             sendPacket(ps, packetPlayOutPlayerInfoConstructor.newInstance(enumRemovePlayer, array))
