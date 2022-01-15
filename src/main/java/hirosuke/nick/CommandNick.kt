@@ -12,11 +12,11 @@ import java.lang.reflect.Field
 open class CommandNick : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if (sender is Player) {
+        if (sender is Player && sender.hasPermission("nick.command.nick")) {
             if (command.name == "nick") {
 
                 if (args.isEmpty()) {
-                    getBeforeName(sender.uniqueId.toString())?.let { setNick(sender, it) }
+                    setNick(sender, getBeforeName(sender.uniqueId.toString()))
                     sender.sendMessage("Removed your nickname.")
                 }
 

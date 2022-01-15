@@ -10,3 +10,10 @@ commands:
   nick:
     description: change player's display name.
     usage: /nick <name>
+permissions:
+  nick.command.*:
+    children:
+      nick.command.nick: true
+    default: op
+  nick.command.nick:
+    default: op
