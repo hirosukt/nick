@@ -5,10 +5,11 @@ plugins {
 }
 
 group = 'hirosuke'
-version = '1.6.3'
+version = ''
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven {
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
@@ -31,7 +32,7 @@ dependencies {
 jar {
     from {
         duplicatesStrategy 'exclude'
-        configurations.compileOnly.collect {
+        configurations.runtimeClasspath.collect {
             it.isDirectory() ? it : zipTree(it)
         }
     }
